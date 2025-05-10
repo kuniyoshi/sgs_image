@@ -16,3 +16,7 @@ func IsEnd() bool {
 func Progress() {
 	log.Println("Progress")
 }
+
+func End() {
+	log.Println("End")
+}
