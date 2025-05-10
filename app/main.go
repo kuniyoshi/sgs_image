@@ -1,11 +1,17 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/kuniyoshi/sgs_image/scenario"
 )
 
 func main() {
-	fmt.Println(scenario.Hello())
+	scenario.Begin()
+
+	for !scenario.IsEnd() {
+		scenario.Progress()
+	}
+
+	log.Println("DONE")
 }
