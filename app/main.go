@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"sgs/scenario"
+
+	"github.com/kuniyoshi/sgs_image/scenario"
 )
 
 func main() {
