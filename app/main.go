@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -16,13 +17,25 @@ type vector3 struct {
 	z float64
 }
 
+func (v vector3) String() string {
+	return fmt.Sprintf("{x: %.2f, y: %.2f, z: %.2f}", v.x, v.y, v.z)
+}
+
 type camera struct {
 	position  vector3
 	direction vector3
 }
 
+func (c camera) String() string {
+	return fmt.Sprintf("{position: %s, direction: %s}", c.position.String(), c.direction.String())
+}
+
 type scene struct {
 	camera *camera
+}
+
+func (s scene) String() string {
+	return fmt.Sprintf("{camera: %s}", s.camera.String())
 }
 
 func (scene *scene) sync(transition scenario.Transition) {
@@ -40,6 +53,7 @@ func (scene *scene) sync(transition scenario.Transition) {
 
 func (scene *scene) tick() {
 	log.Println("tick")
+	log.Printf("%+v", scene)
 }
 
 type queryType int
