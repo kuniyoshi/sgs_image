@@ -1,6 +1,10 @@
 package main
 
 import (
+	"bufio"
+	"os"
+	"strings"
+
 	"github.com/kuniyoshi/sgs_image/scenario"
 )
 
@@ -37,14 +41,42 @@ type player struct {
 }
 
 func (p *player) begin() {
+	inputChan := make(chan string)
+
 	go func() {
-		// TODO: 標準入力を読み込む
-		select {
-		// TODO: case 標準入力
-		// [qQ] なら query に queryTypeSkip を put
-		// それ以外なら query に queryTypeNext を put
-		case <-p.stop:
-			return
+		reader := bufio.NewReader(os.Stdin)
+		for {
+			select {
+			case <-p.stop:
+				close(inputChan)
+				return
+			default:
+				line, err := reader.ReadString('\n')
+				if err != nil {
+					close(inputChan)
+					return
+				}
+				inputChan <- line
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-p.stop:
+				return
+			case line, ok := <-inputChan:
+				if !ok {
+					return
+				}
+				switch strings.ToLower(strings.TrimSpace(line)) {
+				case "q":
+					p.query <- queryTypeSkip
+				default:
+					p.query <- queryTypeNext
+				}
+			}
 		}
 	}()
 }
