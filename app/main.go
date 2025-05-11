@@ -25,8 +25,8 @@ type scene struct {
 	camera *camera
 }
 
-func (scene *scene) sync(snapshot scenario.Transition) {
-
+func (scene *scene) sync(transition scenario.Transition) {
+	transition.Camera().
 }
 
 func (scene *scene) tick() {

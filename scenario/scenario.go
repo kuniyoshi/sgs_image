@@ -5,14 +5,14 @@ import "log"
 var count = 0
 
 type Vector3 struct {
-	x float64
-	y float64
-	z float64
+	X float64
+	Y float64
+	Z float64
 }
 
 type Camera struct {
-	positoin  Vector3
-	direction Vector3
+	Position  Vector3
+	Direction Vector3
 }
 
 type Transition interface {
