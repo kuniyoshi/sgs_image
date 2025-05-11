@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/kuniyoshi/sgs_image/scenario"
 )
@@ -25,6 +27,10 @@ type scene struct {
 
 func (scene *scene) sync(snapshot scenario.Snapshot) {
 
+}
+
+func (scene *scene) tick() {
+	log.Println("tick")
 }
 
 type queryType int
@@ -97,6 +103,8 @@ func main() {
 
 	scenario.Begin()
 	player.begin()
+	ticker := time.NewTicker(100 * time.Millisecond)
+	defer ticker.Stop()
 
 	for !scenario.IsEnd() {
 		snapshot := scenario.Progress()
@@ -108,6 +116,8 @@ func main() {
 
 			for {
 				select {
+				case <-ticker.C:
+					scene.tick()
 				case <-next:
 					return
 				}
