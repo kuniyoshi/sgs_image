@@ -38,7 +38,11 @@ type player struct {
 
 func (p *player) begin() {
 	go func() {
+		// TODO: 標準入力を読み込む
 		select {
+		// TODO: case 標準入力
+		// [qQ] なら query に queryTypeSkip を put
+		// それ以外なら query に queryTypeNext を put
 		case <-p.stop:
 			return
 		}
@@ -60,6 +64,7 @@ func main() {
 	}
 
 	scenario.Begin()
+	player.begin()
 
 	for !scenario.IsEnd() {
 		snapshot := scenario.Progress()
@@ -85,5 +90,6 @@ func main() {
 		}
 	}
 
+	player.end()
 	scenario.End()
 }
