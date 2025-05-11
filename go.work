@@ -2,6 +2,6 @@ go 1.24.2
 
 use (
 	./cmd/app
-	./sandbox
+	./cmd/sandbox
 	./scenario
 )
