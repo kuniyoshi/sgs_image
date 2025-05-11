@@ -17,8 +17,8 @@ type vector3 struct {
 }
 
 type camera struct {
-	positoin  vector3
-	directoin vector3
+	position  vector3
+	direction vector3
 }
 
 type scene struct {
