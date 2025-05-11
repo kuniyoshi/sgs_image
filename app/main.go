@@ -4,54 +4,60 @@ import (
 	"github.com/kuniyoshi/sgs_image/scenario"
 )
 
-type Vector3 struct {
+type vector3 struct {
 	x float64
 	y float64
 	z float64
 }
 
-type Camera struct {
-	positoin  Vector3
-	directoin Vector3
+type camera struct {
+	positoin  vector3
+	directoin vector3
 }
 
-type Scene struct {
-	camera *Camera
+type scene struct {
+	camera *camera
 }
 
-func (scene *Scene) sync(snapshot scenario.Snapshot) {
+func (scene *scene) sync(snapshot scenario.Snapshot) {
 
 }
 
-type QueryType int
+type queryType int
 
 const (
-	QueryTypeUnknown QueryType = iota
-	QueryTypeNext
-	QueryTypeSkip
+	queryTypeUnknown queryType = iota
+	queryTypeNext
+	queryTypeSkip
 )
 
-type Player interface {
-	Query() chan QueryType
+type player struct {
+	query chan queryType
+	stop  chan struct{}
 }
 
-type Query struct {
+func (p *player) begin() {
+	go func() {
+		select {
+		case <-p.stop:
+			return
+		}
+	}()
 }
 
-type mockPlayer struct {
-	query chan QueryType
-}
-
-func (p *mockPlayer) Query() chan QueryType {
-	return p.query
+func (p *player) end() {
+	p.stop <- struct{}{}
 }
 
 func main() {
-	scene := Scene{
-		camera: &Camera{},
+	scene := scene{
+		camera: &camera{},
 	}
 
-	player := &mockPlayer{query: make(chan QueryType)}
+	player := &player{
+		query: make(chan queryType),
+		stop:  make(chan struct{}),
+	}
 
 	scenario.Begin()
 
@@ -71,10 +77,10 @@ func main() {
 			}
 		}()
 
-		query := <-player.Query()
+		query := <-player.query
 		next <- struct{}{}
 
-		if query == QueryTypeSkip {
+		if query == queryTypeSkip {
 			scenario.Skip()
 		}
 	}

@@ -19,6 +19,14 @@ type Snapshot interface {
 	Camera() Camera
 }
 
+type snapshotData struct {
+	camera Camera
+}
+
+func (s snapshotData) Camera() Camera {
+	return s.camera
+}
+
 func Begin() {
 	log.Println("Begin")
 }
@@ -30,9 +38,13 @@ func IsEnd() bool {
 
 func Progress() Snapshot {
 	log.Println("Progress")
-	return Snapshot{}
+	return snapshotData{}
 }
 
 func End() {
 	log.Println("End")
+}
+
+func Skip() {
+	count = 100
 }
