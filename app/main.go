@@ -116,6 +116,7 @@ func main() {
 
 		query := <-player.query
 		next <- struct{}{}
+		close(next)
 
 		if query == queryTypeSkip {
 			scenario.Skip()
