@@ -15,16 +15,8 @@ type Camera struct {
 	Direction Vector3
 }
 
-type Transition interface {
-	Camera() Camera
-}
-
-type transitionData struct {
-	camera Camera
-}
-
-func (s transitionData) Camera() Camera {
-	return s.camera
+type Transition struct {
+	Camera Camera
 }
 
 func Begin() {
@@ -38,7 +30,31 @@ func IsEnd() bool {
 
 func Progress() Transition {
 	log.Println("Progress")
-	return transitionData{}
+	switch count % 2 {
+	case 0:
+		return Transition{
+			Camera: Camera{
+				Position: Vector3{
+					X: 1,
+				},
+				Direction: Vector3{
+					Z: -1,
+				},
+			},
+		}
+	case 1:
+		return Transition{
+			Camera: Camera{
+				Position: Vector3{
+					X: -1,
+				},
+				Direction: Vector3{
+					Z: -1,
+				},
+			},
+		}
+	}
+	panic("unreachable")
 }
 
 func End() {
