@@ -112,28 +112,20 @@ func main() {
 	for !scenario.IsEnd() {
 		transition := scenario.Progress()
 
-		next := make(chan struct{})
-
-		go func() {
-			defer scene.sync(transition)
-
-			for {
-				select {
-				case <-ticker.C:
-					scene.tick()
-				case <-next:
-					return
+	queryLoop:
+		for {
+			select {
+			case <-ticker.C:
+				scene.tick()
+			case query := <-player.query:
+				if query == queryTypeSkip {
+					scenario.Skip()
 				}
+				break queryLoop
 			}
-		}()
-
-		query := <-player.query
-		next <- struct{}{}
-		close(next)
-
-		if query == queryTypeSkip {
-			scenario.Skip()
 		}
+
+		scene.sync(transition)
 	}
 
 	player.end()
