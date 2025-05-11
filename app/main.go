@@ -92,6 +92,9 @@ func (p *player) end() {
 }
 
 func main() {
+	log.SetFlags(0)
+	log.SetPrefix("--- ")
+
 	scene := scene{
 		camera: &camera{},
 	}
