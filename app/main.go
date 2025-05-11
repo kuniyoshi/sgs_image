@@ -26,7 +26,16 @@ type scene struct {
 }
 
 func (scene *scene) sync(transition scenario.Transition) {
-	transition.Camera().
+	scene.camera.position = vector3{
+		x: transition.Camera().Position.X,
+		y: transition.Camera().Position.Y,
+		z: transition.Camera().Position.Z,
+	}
+	scene.camera.direction = vector3{
+		x: transition.Camera().Direction.X,
+		y: transition.Camera().Direction.Y,
+		z: transition.Camera().Direction.Z,
+	}
 }
 
 func (scene *scene) tick() {
