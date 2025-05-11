@@ -25,7 +25,7 @@ type scene struct {
 	camera *camera
 }
 
-func (scene *scene) sync(snapshot scenario.Snapshot) {
+func (scene *scene) sync(snapshot scenario.Transition) {
 
 }
 
@@ -107,12 +107,12 @@ func main() {
 	defer ticker.Stop()
 
 	for !scenario.IsEnd() {
-		snapshot := scenario.Progress()
+		transition := scenario.Progress()
 
 		next := make(chan struct{})
 
 		go func() {
-			defer scene.sync(snapshot)
+			defer scene.sync(transition)
 
 			for {
 				select {

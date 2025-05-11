@@ -15,15 +15,15 @@ type Camera struct {
 	direction Vector3
 }
 
-type Snapshot interface {
+type Transition interface {
 	Camera() Camera
 }
 
-type snapshotData struct {
+type transitionData struct {
 	camera Camera
 }
 
-func (s snapshotData) Camera() Camera {
+func (s transitionData) Camera() Camera {
 	return s.camera
 }
 
@@ -36,9 +36,9 @@ func IsEnd() bool {
 	return count > 2
 }
 
-func Progress() Snapshot {
+func Progress() Transition {
 	log.Println("Progress")
-	return snapshotData{}
+	return transitionData{}
 }
 
 func End() {
