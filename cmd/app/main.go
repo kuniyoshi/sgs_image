@@ -133,22 +133,88 @@ func main() {
 	defer ticker.Stop()
 
 	for !scenario.IsEnd() {
-		transition := scenario.Progress()
+		transitions := scenario.Progress()
 
-	queryLoop:
-		for {
-			select {
-			case <-ticker.C:
-				scene.tick()
-			case query := <-player.query:
-				if query == queryTypeSkip {
-					scenario.Skip()
+		// 各Transitionを目標位置として処理
+		for _, targetTransition := range transitions {
+			// 現在のカメラ位置を保存
+			startCamera := camera{
+				position:  scene.camera.position,
+				direction: scene.camera.direction,
+			}
+
+			// 目標位置
+			targetCamera := camera{
+				position: vector3{
+					x: targetTransition.Camera.Position.X,
+					y: targetTransition.Camera.Position.Y,
+					z: targetTransition.Camera.Position.Z,
+				},
+				direction: vector3{
+					x: targetTransition.Camera.Direction.X,
+					y: targetTransition.Camera.Direction.Y,
+					z: targetTransition.Camera.Direction.Z,
+				},
+			}
+
+			// アニメーションの総ステップ数
+			const totalSteps = 10
+			currentStep := 0
+
+			// アニメーションループ
+		animationLoop:
+			for currentStep <= totalSteps {
+				select {
+				case <-ticker.C:
+					// 現在のステップに基づいて位置を補間
+					t := float64(currentStep) / float64(totalSteps)
+
+					// 線形補間
+					scene.camera.position = vector3{
+						x: startCamera.position.x + t*(targetCamera.position.x-startCamera.position.x),
+						y: startCamera.position.y + t*(targetCamera.position.y-startCamera.position.y),
+						z: startCamera.position.z + t*(targetCamera.position.z-startCamera.position.z),
+					}
+
+					scene.camera.direction = vector3{
+						x: startCamera.direction.x + t*(targetCamera.direction.x-startCamera.direction.x),
+						y: startCamera.direction.y + t*(targetCamera.direction.y-startCamera.direction.y),
+						z: startCamera.direction.z + t*(targetCamera.direction.z-startCamera.direction.z),
+					}
+
+					scene.tick()
+					currentStep++
+
+					// アニメーション完了
+					if currentStep > totalSteps {
+						break animationLoop
+					}
+				case query := <-player.query:
+					if query == queryTypeSkip {
+						scenario.Skip()
+						// スキップの場合は即座に目標位置に設定
+						scene.camera.position = targetCamera.position
+						scene.camera.direction = targetCamera.direction
+						scene.tick()
+						break animationLoop
+					}
 				}
-				break queryLoop
+			}
+
+			// ユーザー入力待ち
+		queryLoop:
+			for {
+				select {
+				case <-ticker.C:
+					scene.tick()
+				case query := <-player.query:
+					if query == queryTypeSkip {
+						scenario.Skip()
+					}
+					break queryLoop
+				}
 			}
 		}
-
-		scene.sync(transition)
 	}
 
 	player.end()

@@ -15,6 +15,12 @@ type Camera struct {
 	Direction Vector3
 }
 
+type TransitionType int
+
+const (
+	TransitionTypeUnknown TransitionType = iota
+)
+
 type Transition struct {
 	Camera Camera
 }
@@ -28,11 +34,16 @@ func IsEnd() bool {
 	return count > 2
 }
 
-func Progress() Transition {
+func Progress() []Transition {
 	log.Println("Progress")
+
+	// 最終的なカメラの状態を表す複数のTransitionを返す
+	transitions := make([]Transition, 0)
+
 	switch count % 2 {
 	case 0:
-		return Transition{
+		// 右側の位置
+		transitions = append(transitions, Transition{
 			Camera: Camera{
 				Position: Vector3{
 					X: 1,
@@ -41,9 +52,10 @@ func Progress() Transition {
 					Z: -1,
 				},
 			},
-		}
+		})
 	case 1:
-		return Transition{
+		// 左側の位置
+		transitions = append(transitions, Transition{
 			Camera: Camera{
 				Position: Vector3{
 					X: -1,
@@ -52,9 +64,10 @@ func Progress() Transition {
 					Z: -1,
 				},
 			},
-		}
+		})
 	}
-	panic("unreachable")
+
+	return transitions
 }
 
 func End() {

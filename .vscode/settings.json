@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
         "kuniyoshi"
-    ]
+    ],
+    "makefile.configureOnOpen": false
 }
