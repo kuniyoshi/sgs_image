@@ -19,6 +19,13 @@ app 側は前回のトランジションの値を保持して、アニメーシ�
 
 # MODULES
 
+modules are;
+
+- scenario
+- and app.
+
+Both of scenario, and app have almost same type like 
+
 ## scenario
 
 ライブラリ化を考えるとインターフェースを使いたいですが、今は面倒なので使いません。
